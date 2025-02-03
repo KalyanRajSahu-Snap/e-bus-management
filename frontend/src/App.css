@@ -2,14 +2,13 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #f2709c 0%, #ff9472 100%);
+  background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
   min-height: 100vh;
   color: white;
 }
 
 .App {
   text-align: center;
-  padding: 20px;
 }
 
 .container {
@@ -25,7 +24,7 @@ h2 {
 }
 
 .btn {
-  background: linear-gradient(135deg, #d53369 0%, #cbad6d 100%);
+  background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
   color: white;
   border: none;
   padding: 10px 20px;

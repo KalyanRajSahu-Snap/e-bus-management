@@ -16,14 +16,14 @@ function App() {
       <div className="App">
         <Navbar />
         <Routes>
-          <Route path="/" exact component={Home} />
-          <Route path="/book-ticket" component={BookTicket} />
-          <Route path="/customer-support" component={CustomerSupport} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/driver" component={DriverDashboard} />
-          <Route path="/user" component={UserDashboard} />
+          <Route path="/" element={<Home />} />
+          <Route path="/book-ticket" element={<BookTicket />} />
+          <Route path="/customer-support" element={<CustomerSupport />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/driver" element={<DriverDashboard />} />
+          <Route path="/user" element={<UserDashboard />} />
         </Routes>
       </div>
     </Router>
