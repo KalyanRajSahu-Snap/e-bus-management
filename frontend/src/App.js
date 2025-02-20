@@ -5,6 +5,7 @@ import BookTicket from "./components/BookTicket"
 import CustomerSupport from "./components/CustomerSupport"
 import Login from "./components/Login"
 import Signup from "./components/Signup"
+import ForgotPassword from "./components/ForgotPassword"
 import AdminDashboard from "./components/AdminDashboard"
 import DriverDashboard from "./components/DriverDashboard"
 import UserDashboard from "./components/UserDashboard"
@@ -21,6 +22,7 @@ function App() {
           <Route path="/customer-support" element={<CustomerSupport />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/driver" element={<DriverDashboard />} />
           <Route path="/user" element={<UserDashboard />} />
