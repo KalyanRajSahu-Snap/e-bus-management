@@ -1,4 +1,7 @@
+"use client"
+
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import "./Signup.css"
 
 const SignupForm = ({ userType }) => {
@@ -7,11 +10,40 @@ const SignupForm = ({ userType }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [license, setLicense] = useState("")
+  const [error, setError] = useState("")
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle signup logic here
-    console.log(`${userType} signup:`, { name, email, password, license })
+    setError("")
+
+    try {
+      const response = await fetch("http://localhost:5000/api/users/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: name,
+          email,
+          password,
+          role: userType,
+          license: userType === "driver" ? license : undefined,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        console.log("Signup successful:", data)
+        navigate("/login") // Redirect to login page after successful signup
+      } else {
+        setError(data.message || "Signup failed")
+      }
+    } catch (error) {
+      console.error("Error during signup:", error)
+      setError("An error occurred during signup")
+    }
   }
 
   return (
@@ -66,8 +98,9 @@ const SignupForm = ({ userType }) => {
           />
         </div>
       )}
+      {error && <div className="error-message">{error}</div>}
       <div className="form-actions">
-        <button type="button" className="btn btn-secondary">
+        <button type="button" className="btn btn-secondary" onClick={() => navigate("/login")}>
           Back to Login
         </button>
         <button type="submit" className="btn btn-primary">

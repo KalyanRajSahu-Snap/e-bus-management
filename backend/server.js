@@ -1,6 +1,7 @@
 const express = require("express")
-const mongoose = require("mongoose")
+const { MongoClient } = require("mongodb")
 const cors = require("cors")
+
 const app = express()
 const port = process.env.PORT || 5000
 
@@ -8,27 +9,33 @@ const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
-// Connect to MongoDB
-mongoose.connect("mongodb://localhost/e-bus-management", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+// MongoDB Connection
+const uri = "mongodb://localhost:27017"
+const client = new MongoClient(uri)
 
-const connection = mongoose.connection
-connection.once("open", () => {
-  console.log("MongoDB database connection established successfully")
-})
+async function startServer() {
+  try {
+    await client.connect()
+    console.log("Connected to MongoDB")
 
-// Routes
-const userRouter = require("./routes/users")
-const busRouter = require("./routes/buses")
-const ticketRouter = require("./routes/tickets")
+    const db = client.db("busman")
 
-app.use("/api/users", userRouter)
-app.use("/api/buses", busRouter)
-app.use("/api/tickets", ticketRouter)
+    // Routes
+    const userRouter = require("./routes/users")(db)
+    const busRouter = require("./routes/buses")(db)
+    const ticketRouter = require("./routes/tickets")(db)
 
-app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`)
-})
+    app.use("/api/users", userRouter)
+    app.use("/api/buses", busRouter)
+    app.use("/api/tickets", ticketRouter)
+
+    app.listen(port, () => {
+      console.log(`Server is running on port: ${port}`)
+    })
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error)
+  }
+}
+
+startServer()
 

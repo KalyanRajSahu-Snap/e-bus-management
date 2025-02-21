@@ -1,28 +1,36 @@
-const router = require("express").Router()
-const Ticket = require("../models/ticket.model")
+const express = require("express")
 
-router.route("/").get((req, res) => {
-  Ticket.find()
-    .then((tickets) => res.json(tickets))
-    .catch((err) => res.status(400).json("Error: " + err))
-})
+module.exports = (db) => {
+  const router = express.Router()
 
-router.route("/add").post((req, res) => {
-  const userId = req.body.userId
-  const busId = req.body.busId
-  const date = Date.parse(req.body.date)
-
-  const newTicket = new Ticket({
-    userId,
-    busId,
-    date,
+  router.get("/", async (req, res) => {
+    try {
+      const ticketsCollection = db.collection("tickets")
+      const tickets = await ticketsCollection.find().toArray()
+      res.json(tickets)
+    } catch (err) {
+      res.status(400).json("Error: " + err)
+    }
   })
 
-  newTicket
-    .save()
-    .then(() => res.json("Ticket booked!"))
-    .catch((err) => res.status(400).json("Error: " + err))
-})
+  router.post("/add", async (req, res) => {
+    try {
+      const { userId, busId, date } = req.body
+      const ticketsCollection = db.collection("tickets")
 
-module.exports = router
+      const newTicket = {
+        userId,
+        busId,
+        date: new Date(date),
+      }
+
+      const result = await ticketsCollection.insertOne(newTicket)
+      res.json("Ticket booked!")
+    } catch (err) {
+      res.status(400).json("Error: " + err)
+    }
+  })
+
+  return router
+}
 

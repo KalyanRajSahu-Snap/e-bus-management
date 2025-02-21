@@ -1,28 +1,36 @@
-const router = require("express").Router()
-const Bus = require("../models/bus.model")
+const express = require("express")
 
-router.route("/").get((req, res) => {
-  Bus.find()
-    .then((buses) => res.json(buses))
-    .catch((err) => res.status(400).json("Error: " + err))
-})
+module.exports = (db) => {
+  const router = express.Router()
 
-router.route("/add").post((req, res) => {
-  const busNumber = req.body.busNumber
-  const route = req.body.route
-  const capacity = Number(req.body.capacity)
-
-  const newBus = new Bus({
-    busNumber,
-    route,
-    capacity,
+  router.get("/", async (req, res) => {
+    try {
+      const busesCollection = db.collection("buses")
+      const buses = await busesCollection.find().toArray()
+      res.json(buses)
+    } catch (err) {
+      res.status(400).json("Error: " + err)
+    }
   })
 
-  newBus
-    .save()
-    .then(() => res.json("Bus added!"))
-    .catch((err) => res.status(400).json("Error: " + err))
-})
+  router.post("/add", async (req, res) => {
+    try {
+      const { busNumber, route, capacity } = req.body
+      const busesCollection = db.collection("buses")
 
-module.exports = router
+      const newBus = {
+        busNumber,
+        route,
+        capacity: Number(capacity),
+      }
+
+      const result = await busesCollection.insertOne(newBus)
+      res.json("Bus added!")
+    } catch (err) {
+      res.status(400).json("Error: " + err)
+    }
+  })
+
+  return router
+}
 
